@@ -1,0 +1,35 @@
+import numpy as np
+import math
+
+NLT =  [[16, 0.02, 0.004], [16, 0.02, 0.002]
+       ,[20, 0.02, 0.004], [20, 0.02, 0.002]
+       ,[26, 0.02, 0.003], [30, 0.02, 0.003]
+       ,[32, 0.02, 0.008], [32, 0.04, 0.004]]
+N, L, t = NLT[0]
+
+def Calc(N, L, t):
+
+    Ts = 300
+    Ti = 50
+    Lc = (L + t/2)
+    m = math.sqrt((1000/(240*t)))
+    m = (round(m, 2))
+    na = (np.tanh(Lc*m))/(m*Lc)
+    na = round(na, 2)
+    nz = 1-(((N*0.044)/0.8)*(1-na))
+
+    Rto = 1/(nz*500*0.8)
+    Rcond = np.log(2.16)/(240*(2*np.pi))
+    Rtot = Rcond + Rto
+
+    Q = round((Ts - Ti) / Rtot, 2)
+
+    return na, Rtot, Q
+
+
+
+print("N    L   T    Na    Q(W/mK)")
+for i in range(len(NLT)):
+    N, L, t = NLT[i]
+    na, Rtot, Q = Calc(N, L, t)
+    print(N, L, t, na, Q)
